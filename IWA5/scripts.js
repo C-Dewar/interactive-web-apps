@@ -12,7 +12,7 @@ currency = "R"
 
 
 FREE_WARNING = 'Free shipping only applies to single customer orders'
-BANNED_WARNIN = 'Unfortunately we do not ship to your country of residence'
+BANNED_WARNING = 'Unfortunately we do not ship to your country of residence'
 NONE_SELECTED = 0
 //changed NONE_SELECTED from a string to a number value of 0
 
