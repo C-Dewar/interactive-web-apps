@@ -8,10 +8,10 @@ function multiply(a, b){
 	return a * b 
 }
 
-function internal(a,b,c){
+function internal(){
 	const added = this.add(this.internal.a, this.internal.b)
-	let multiplied = this.multiply(added, this.internal.c)
-	return multiplied
+	const multiplied = this.multiply(added, this.internal.c)
+	console.log(multiplied)
 }
 
 
@@ -44,5 +44,5 @@ example2.calculate()
 
 
 // Not 100% sure if I'm allowed to add code at the end of the Untouchable code section. I might have cut a corner here without intending to.
-console.log(example1.calculate());
-console.log(example2.calculate());
+// console.log(example1.calculate());
+// console.log(example2.calculate());
