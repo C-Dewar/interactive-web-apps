@@ -82,29 +82,34 @@ const MONTHS = [
   
     const raceDate = new Date(date);
     const day = raceDate.getDate();
+    //console.log(day)
     const month = MONTHS[raceDate.getMonth()];
     const year = raceDate.getFullYear();
   
    
     const total = time.reduce((acc, curr) => acc + curr, 0)
+    
 
     const hours = Math.floor(total / 60);
+   
+
     const minutes = total % 60;
+    //console.log(minutes)
   
   
   
     list.innerHTML = /* html */ `
       <dt>Athlete</dt>
-      <dd>${firstName, surname}</dd>
+      <dd>${firstName} ${surname}</dd>
   
       <dt>Total Races</dt>
       <dd>${races.length}</dd>
   
       <dt>Event Date (Latest)</dt>
-      <dd>${day, month, year}</dd>
+      <dd>${day}  ${month} ${year}</dd>
   
       <dt>Total Time (Latest)</dt>
-      <dd>${hours.toString().padStart(2, 0), minutes.toString().padStart(2,0)}</dd>
+      <dd>${(hours.toString().padStart(2, 0))}${':'}${(minutes.toString().padStart(2,0))}</dd>
     `;
   
     fragment.appendChild(list);
