@@ -50,6 +50,12 @@ const createData = () => {
 
 
     const weeks = createArray(6);
+    /**
+     * Array of 6 weeks created instead of an array of 5 weeks to account for the very 
+     * rare occurence of potentially having the 1st of the month fall on either a Friday or a Saturday within a 31 day month.
+     * When that occurs, the last day or two of the month (for 30/31 day months respectively) will be ommited from the resulting
+     * array being created of the month.
+     */
     const days = createArray(7);
     const result = [];
   

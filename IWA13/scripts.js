@@ -20,7 +20,7 @@ const calcUser = () => {
 }
 
 const checkUser = () => {
-	if (user && state === 'requesting') {
+	if (user !== null && state === 'requesting') {
 		console.log(`User: ${user} (${calculated})`)
 	}
 }

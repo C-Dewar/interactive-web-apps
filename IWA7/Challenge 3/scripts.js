@@ -22,5 +22,5 @@ ${sarah}
 ${divider}
 ${total+ 'R' +owed}
 ${divider}`;
-
+// possibly use /n precursor to each string value so that it is represented on its own line. 
 console.log(result)
