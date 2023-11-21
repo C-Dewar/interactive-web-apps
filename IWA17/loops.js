@@ -68,7 +68,7 @@ const createData = () => {
 
         
     for (const dayIndex of days) {
-        const day = dayIndex - startDay + weekIndex * 7 - 1;
+        const day = (weekIndex * 7) + dayIndex - startDay + 1;
         const isValid = day > 0 && day <= daysInMonth;
         
         result[weekIndex].days.push({
