@@ -78,22 +78,3 @@ console.log(result)
 // else if (3.length > 2.length)
 // Only edit above
 
-result.push(extractBiggest())
-result.push(extractBiggest())
-result.push(extractBiggest())
-result.push(extractBiggest())
-result.push(extractBiggest())
-
-result.push(extractBiggest())
-result.push(extractBiggest())
-result.push(extractBiggest())
-result.push(extractBiggest())
-result.push(extractBiggest())
-
-result.push(extractBiggest())
-result.push(extractBiggest())
-// result.push(extractBiggest())
-// result.push(extractBiggest())
-// result.push(extractBiggest())
-
-console.log(result)
