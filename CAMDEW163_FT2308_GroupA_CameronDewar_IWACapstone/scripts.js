@@ -55,15 +55,12 @@ filter books by genre so that I can find books to read in genres that I enjoy.
 toggle between dark and light modes so that I can use the app comfortably at night.
 */
 /** Default background colour setting relative to night or day */
-const defaultTheme = () => { 
-const windowSettings = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
 
+const defaultTheme = (event) => {
+    event.preventDefault();
 
-document.documentElement.style.setProperty('--color-dark', css[theme].dark);
-document.documentElement.style.setProperty('--color-light', css[theme].light); 
+    window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
 };
-
-
 if (!books && !Array.isArray(books)){ throw new Error('Source required')};
 if (!PREVIEW_RANGE && PREVIEW_RANGE.length < 2){throw new Error('Range must be an array with two numbers')};
 
@@ -75,17 +72,15 @@ if (!PREVIEW_RANGE && PREVIEW_RANGE.length < 2){throw new Error('Range must be a
 /** Update remaining books to be displayed via the remaining button function  */
 
 const updateRemainingButton = () => {
-    const remainingBooksCount = (filteredBooks.length - currentPage) * BOOKS_PER_PAGE;
-    const remainingBooksDisplay = remainingBooksCount > 0 ? remainingBooksCount: 0;
-    
-    dataListButton.innerText = `Show more (${filteredBooks.length - BOOKS_PER_PAGE})`;
-    
-    dataListButton.disabled = !(remainingBooksCount > 0);
-    
+    const remainingBooksCount = filteredBooks.length - currentPage * BOOKS_PER_PAGE;
+    const remainingBooksDisplay = remainingBooksCount > 0 ? remainingBooksCount : 0;
+
     dataListButton.innerHTML = /* html */ `
-        <span>Show more</span>,
+        <span>Show more</span>
         <span class="list__remaining"> (${remainingBooksDisplay})</span>`;
-    };
+    
+    dataListButton.disabled = remainingBooksCount <= 0;
+};
     
 /** createPrieview function that will generate a preview from the selected book/element */
 const createPreview = ({author, id, image, title}) => {
@@ -93,7 +88,7 @@ const element = document.createElement('button');
 element.className = "preview";
 element.dataset.preview = id;
 element.innerHTML = /* HTML */ `<div>
-<image class='preview__image' src = "${image}" alt="book cover"}</image>
+<img class='preview__image' src = "${image}" alt="book cover"}</img>
 </div>
 <div class ='preview__info'>
 <dt class = "preview__title">${title}</dt>
@@ -169,19 +164,9 @@ for (const [id, name] of Object.entries(authors)) {
 dataSearchAuthors.appendChild(authorsFragment);
 
 
-/**  */
-
-dataListClose.addEventListener('click',  dataListHandler);
 
 dataListButton.addEventListener('click', dataListHandler);
 
-
-/** Show search overlay handler function */
-dataHeaderOverlay.addEventListener('click', () => {
-    dataSearchOverlay.open === true ;
-    dataSearchTitle.focus();
-    dataSearchOverlay.style.display = "block";
-});
 
 /**Search overlay handler function */
 
@@ -225,8 +210,8 @@ dataSearchOverlay.open = false;
 dataSearchForm.reset();
 };
 
-
-const handleListItemClick = (event) => {
+/** List click handler to  */
+const handleListItem = (event) => {
     const pathArray = Array.from(event.path || event.composedPath());
     let selectedBook = null;
 
@@ -238,7 +223,7 @@ const handleListItemClick = (event) => {
         if(!previewId)continue;
 
         for (const singleBook of books) {
-            if (singleBook.id === node?.dataset.preview){
+            if (singleBook.id === previewId){
             selectedBook = singleBook; 
             break;
         } 
@@ -246,28 +231,91 @@ const handleListItemClick = (event) => {
 }
 
 if(!selectedBook) return;
-    const { image, title, author, published, description} = clickedBook;
-    dataListOverlay.open = true;
+    const { image, title, author, published, description} = selectedBook;
+    dataListActive.open = true;
     dataListBlur.src = image;
-    dataListImage = image;
-    dataListTitle = title;
-    dataListSubtitles = `${authors[author]} (${Date(published).getFullYear()})`
+    dataListImage.src = image;
+    dataListTitle.innerText = title;
+    dataListSubtitles.innerHTML = `${authors[author]} (${Date(published).getFullYear()})`;
     dataListDescription.innerText = description;
     
 };
 
-/** Event Listeners */
+/** Event Listeners  & Shorter handler functions*/
+
+/**Search button Handler - Opens the search overlay*/
+const handleSearchButtonClick = () =>{
+    dataSearchOverlay.open = true;
+    dataSearchTitle.focus();
+};
+
 dataSearchButton.addEventListener('click', handleSearchButtonClick);
+
 dataSearchForm.addEventListener('submit', handleFilterFormSubmit);
-dataSettingsCancel.addEventListener('click', handleSettingsCancelClick);
-dataSettingsForm.addEventListener('submit', handleSettingsFormClick);
-dataSettingsButton.addEventListener('click', handleSettingsButtonClick);
-dataSettingsCancel.addEventListener('click', handleSettingsCancelClick);
-dataListButton.addEventListener('click', handleListButtonClick);
-dataListItems.addEventListener('click', handleListItemClick);
+/** Settings Cancel click Handler & Listener*/
+
+const handleSearchCancelClick = () => {
+    dataSearchOverlay.open = false;
+    dataSearchForm.reset();
+};
+// Event Listener for search cancel button
+dataSearchCancel.addEventListener('click', handleSearchCancelClick);
+
+dataSettingsForm.addEventListener('submit', handleSettingsForm);
+
+//Settings button click handler
+
+const handleSettingsButton = () => {
+    dataSettingsOverlay.open = true;
+};
+
+dataSettingsButton.addEventListener('click', handleSettingsButton);
+
+//Settings cancel click button handler
+
+const handleSettingsCancel = () => {
+    dataSettingsOverlay.open = false;
+};
+
+dataSettingsCancel.addEventListener('click', handleSettingsCancel);
+
+
+/**List Button Handler - Adds another page of books to the currently scrollable area.
+ * Does so in increments of 36 books per page as defines by the global const.
+ * */
+
+const handleListButton = () => {
+    const nextPage = currentPage + 1;
+    currentPage = nextPage;
+
+    // Calculate the start and end indexes for the next page
+    const startIndex = (currentPage - 1) * BOOKS_PER_PAGE;
+    const endIndex = currentPage * BOOKS_PER_PAGE;
+
+    // Check if endIndex is within the bounds of the filtered books array
+    if (endIndex <= filteredBooks.length) {
+        // Append the next set of books to the dataListItems
+        const nextBooks = filteredBooks.slice(startIndex, endIndex);
+        const fragment = createPreviewsFragment(nextBooks);
+        dataListItems.appendChild(fragment);
+
+        // Update the remaining button text and state
+        updateRemainingButton();
+    } else {
+        // If there are no more books to display, disable the button
+        dataListButton.disabled = true;
+        dataListButton.innerText = 'No more books';
+    }
+};
+//List button event listener
+dataListButton.addEventListener('click', handleListButton);
+
+
+dataListItems.addEventListener('click', handleListItem);
+
+
+const handleListClose = () => {
+    dataListOverlay.open = false;
+};
+
 dataListClose.addEventListener('click', handleListClose);
-/** Functional Defaults  */
-defaultTheme();
-updateRemainingButton();
-
-
