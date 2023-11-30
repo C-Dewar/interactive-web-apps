@@ -1,7 +1,8 @@
 {
-    "name": "Book Connect",
+    "name": "CAMDEW163_FT2308_GroupA_CameronDewar_IWACapstone",
     "short_name": "Book Connect",
-    "start_url": "/",
+    "description": "A library app that allows you to search for content matching the description of either a text input (Title), genre selection, author or a combination of the three as well as preview clicked books",
+    "start_url": "https://github.com/C-Dewar/interactive-web-apps/tree/main/CAMDEW163_FT2308_GroupA_CameronDewar_IWACapstone",
     "icons": [
         {
             "src": "/meta/android-chrome-192x192.png",
@@ -16,5 +17,7 @@
     ],
     "theme_color": "#0a0a14",
     "background_color": "#0a0a14",
-    "display": "standalone"
+    "display": "standalone",
+    "author": "Cameron Dewar",
+    "license": "None"
 }
